@@ -1,36 +1,41 @@
 import time
 import random
+import sys
 
-# --- Mock Agent Functions ---
-def profile_agent(user_profile):
-    print("[Profile Agent] Extracting skills from resume...")
+# --- User Profile ---
+user_profile = {
+    "name": "Jayesh",
+    "skills": ["Python", "SQL", "React"],
+    "experience": "2 years"
+}
+
+# --- Agent Logic ---
+def profile_agent():
+    print("[Profile Agent] Extracting skills and experience...")
     time.sleep(1)
-    return {
-        "skills": user_profile["skills"],
-        "experience": user_profile["experience"]
-    }
+    return user_profile
 
 def assessment_agent(skills):
-    print("[Assessment Agent] Generating adaptive questions...")
+    print("[Assessment Agent] Running adaptive assessment...")
     time.sleep(1)
-    return {skill: random.randint(60, 90) for skill in skills}
+    return {skill: random.randint(60, 95) for skill in skills}
 
 def recommender_agent(scores):
-    print("[Recommender Agent] Analyzing skill gaps and suggesting modules...")
+    print("[Recommender Agent] Generating learning recommendations...")
     time.sleep(1)
     modules = []
     for skill, score in scores.items():
         if score < 80:
-            modules.append({"module": f"Improve {skill}", "time": f"{random.randint(4, 8)}h"})
+            modules.append({"module": f"Mastering {skill}", "time": f"{random.randint(4, 8)}h"})
     return modules
 
 def tracker_agent(modules):
-    print("[Tracker Agent] Tracking learning modules and progress...")
+    print("[Tracker Agent] Tracking module progress...")
     time.sleep(1)
-    return [f"Not Started: {m['module']}" for m in modules]
+    return {module["module"]: "Not Started" for module in modules}
 
 def hackathon_agent():
-    print("[Hackathon Agent] Setting up upcoming hackathon...")
+    print("[Hackathon Agent] Preparing hackathon info...")
     time.sleep(1)
     return {
         "title": "AI in Education",
@@ -42,56 +47,77 @@ def hackathon_agent():
         ]
     }
 
-# --- Main CLI Simulation ---
-user_profile = {
-    "name": "Jayesh",
-    "skills": ["Python", "SQL", "React"],
-    "experience": "2 years"
-}
-
 def print_progress_bar():
     steps = ["Profile Created", "Assessment Completed", "Skills Evaluated", "Learning Path Generated", "Hackathon Joined"]
     for i, step in enumerate(steps):
         print(f"[{'■'*(i+1)}{'□'*(len(steps)-i-1)}] {step}")
-        time.sleep(0.4)
+        time.sleep(0.3)
 
-def main():
+# --- CLI Commands ---
+def forge_main():
     print("\n🔹 Welcome to Forge – Your Personalized Coding Mentor\n")
-    time.sleep(1)
 
-    # Profile Agent
-    profile = profile_agent(user_profile)
-    print(f"✅ Skills Extracted: {', '.join(profile['skills'])}")
-    print(f"📊 Experience Level: {profile['experience']}")
+    profile = profile_agent()
+    print(f"✅ Name: {profile['name']}, Experience: {profile['experience']}")
+    print(f"✅ Skills: {', '.join(profile['skills'])}")
 
-    # Assessment Agent
-    scores = assessment_agent(profile["skills"])
+    scores = assessment_agent(profile['skills'])
+    print("\n📊 Assessment Results:")
     for skill, score in scores.items():
-        print(f"✔️ {skill} Score: {score}%")
+        print(f" - {skill}: {score}%")
 
-    # Recommender Agent
     modules = recommender_agent(scores)
+    print("\n📚 Recommended Learning Modules:")
     for m in modules:
-        print(f"📚 Suggested: {m['module']} ({m['time']})")
+        print(f" - {m['module']} ({m['time']})")
 
-    # Tracker Agent
     progress = tracker_agent(modules)
-    for p in progress:
-        print(f"🔄 {p}")
+    print("\n🔄 Learning Tracker:")
+    for module, status in progress.items():
+        print(f" - {module}: {status}")
 
-    # Hackathon Agent
     hackathon = hackathon_agent()
-    print(f"🚀 Upcoming Hackathon: {hackathon['title']} on {hackathon['start_date']}")
-    for ch in hackathon["challenges"]:
-        print(f"   - {ch}")
+    print(f"\n🚀 Upcoming Hackathon: {hackathon['title']} (Starts: {hackathon['start_date']})")
+    for ch in hackathon['challenges']:
+        print(f"   • {ch}")
 
-    print("\n🎯 Your Progress:")
+    print("\n🎯 Progress Overview:")
     print_progress_bar()
 
-    print("\n🏁 Commands:")
-    print(" - `forge learn` to start learning")
-    print(" - `forge hackathon` to view or join a challenge")
-    print(" - `forge status` to see your progress")
+    print("\n🏁 Try commands: \n - python forge.py learn\n - python forge.py hackathon\n - python forge.py status")
 
-if __name__ == "__main__":
-    main()
+
+def forge_learn():
+    print("\n📘 Starting Learning Session...\n")
+    print("Modules in progress: React, SQL Optimization")
+    time.sleep(1)
+    print("✅ Tips: Break problems into smaller pieces. Practice daily.\n")
+
+def forge_hackathon():
+    print("\n🚧 Hackathon Zone\n")
+    print("- You are registered for: AI in Education")
+    print("- Challenge: Build an AI tutor that adapts to student progress")
+    print("💡 Tip: Use GPT prompts to simulate questions based on difficulty")
+
+
+def forge_status():
+    print("\n📈 Current Status\n")
+    print(" - Assessments: Completed")
+    print(" - Modules: 2 pending")
+    print(" - Hackathon: Joined")
+    print("🎖️ Keep going, you're doing great!\n")
+
+# --- Main Entrypoint ---
+if __name__ == '__main__':
+    if len(sys.argv) == 1:
+        forge_main()
+    else:
+        cmd = sys.argv[1]
+        if cmd == 'learn':
+            forge_learn()
+        elif cmd == 'hackathon':
+            forge_hackathon()
+        elif cmd == 'status':
+            forge_status()
+        else:
+            print("❌ Unknown command. Try: python forge.py [learn|hackathon|status]")
